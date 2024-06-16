@@ -1,4 +1,4 @@
-package com.phorvat.weatherforecastingapp.models;
+package com.phorvat.weatherforecastingapp.models.user;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsername(String email);
 
-    @Query("SELECT c FROM User c")
-    @EntityGraph(attributePaths = "trips")
-    List<User> findAllCustomersWithTrips();
 }

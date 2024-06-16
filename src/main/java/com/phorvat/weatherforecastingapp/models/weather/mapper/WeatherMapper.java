@@ -1,26 +1,35 @@
-package hr.algebra.travelplanner.feature.destination.mapper;
+package com.phorvat.weatherforecastingapp.models.weather.mapper;
 
-import hr.algebra.travelplanner.feature.destination.Destination;
-import hr.algebra.travelplanner.feature.destination.request.DestinationRequest;
-import hr.algebra.travelplanner.feature.destination.response.DestinationDetails;
-import hr.algebra.travelplanner.feature.location.mapper.LocationMapper;
+import com.phorvat.weatherforecastingapp.models.location.Location;
+import com.phorvat.weatherforecastingapp.models.location.LocationService;
+import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
+import com.phorvat.weatherforecastingapp.models.weather.Weather;
+import com.phorvat.weatherforecastingapp.models.weather.request.WeatherRequest;
+import com.phorvat.weatherforecastingapp.models.weather.response.WeatherDetails;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(
-    componentModel = "spring",
-    uses = {LocationMapper.class, DestinationReferenceMapper.class})
-public interface DestinationMapper {
+
+import java.util.List;
+@Mapper(componentModel = "spring", uses = LocationService.class)
+public abstract class WeatherMapper {
+
+  @Autowired
+  private LocationService locationService;
+
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "trip", ignore = true)
-  @Mapping(target = "locations", source = "locationRequests")
-  @Mapping(target = "country", source = "countryId")
-  Destination toEntity(DestinationRequest destinationRequest);
+  @Mapping(source = "locationId", target = "location")
+  public abstract Weather toEntity(WeatherRequest weatherRequest);
 
-  @Mapping(target = "countryId", source = "country.id")
-  @Mapping(target = "countryName", source = "country.name")
-  DestinationDetails toDetails(Destination destination);
+  public abstract WeatherDetails toDetails(Weather weather);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @InheritConfiguration(name = "toEntity")
-  void update(DestinationRequest destinationRequest, @MappingTarget Destination target);
+  public void update(WeatherRequest weatherRequest, @MappingTarget Weather weather) {
+    weather.setLocation(locationService.getLocationById(weatherRequest.getLocationId()));
+  }
+
+  @AfterMapping
+  public void setLocations(WeatherRequest weatherRequest, @MappingTarget Weather weather) {
+    weather.setLocation(locationService.getLocationById(weatherRequest.getLocationId()));
+  }
 }
+

@@ -1,4 +1,4 @@
-package com.phorvat.weatherforecastingapp.models;
+package com.phorvat.weatherforecastingapp.models.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/users")
 public class UserController {
   @Autowired private UserService userService;
 
@@ -25,7 +25,7 @@ public class UserController {
     return userService.getUserIdFromToken(token);
   }
 
-  @GetMapping("/currentuser")
+  @GetMapping("/current")
   public User getCurrentUser(@RequestHeader("Authorization") String token) {
     return userService.getUserDataFromToken(token);
   }
@@ -34,4 +34,16 @@ public class UserController {
   public List<String> getCurrentUserRoles(@RequestHeader("Authorization") String token) {
     return userService.getCustomerRolesFromToken(token);
   }
+
+  @PostMapping("/updateLocation/{locationId}")
+  public User updateUserLocation(@RequestHeader("Authorization") String token, @PathVariable Integer locationId) {
+    userService.updateUserLocation(userService.getUserIdFromToken(token), locationId);
+    return userService.getUserDataFromToken(token);
+  }
+
+  @DeleteMapping("/{id}")
+  public void deleteUser(@PathVariable Integer id) {
+    userService.deleteUser(id);
+  }
+
 }

@@ -1,6 +1,6 @@
-package hr.algebra.travelplanner.authentication.jwt;
+package com.phorvat.weatherforecastingapp.auth.jwt;
 
-import hr.algebra.travelplanner.authentication.configuration.SecurityConfiguration;
+import com.phorvat.weatherforecastingapp.auth.configuration.SecurityConfiguration;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,8 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, @NonNull FilterChain filterChain)
-      throws ServletException, IOException {
+          HttpServletRequest request, HttpServletResponse response, @NonNull FilterChain filterChain)
+          throws ServletException, IOException {
     request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
       log.trace("doFilter for endpoint: {} resolved jwt: {}", request.getRequestURI(), jwtToken);
 
       if (jwtToken != null
-          && !jwtToken.isEmpty()) { // only validate token if it exists in the request
+              && !jwtToken.isEmpty()) { // only validate token if it exists in the request
         boolean authenticate = jwtService.authenticate(jwtToken);
 
         if (!authenticate) {
@@ -56,6 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   private String extractJwtToken(HttpServletRequest request) {
+    System.out.println(request);
     String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
     if (bearerToken != null && bearerToken.startsWith(AUTHORIZATION_TOKEN_PREFIX)) {
       return bearerToken.substring(AUTHORIZATION_TOKEN_PREFIX.length());
@@ -67,7 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
     String uri = request.getRequestURI();
 
     return SecurityConfiguration.UNAUTHENTICATED_ENDPOINTS.stream()
-        .anyMatch(endpoint -> uri.contains(endpointWithoutWildcard(endpoint)));
+            .anyMatch(endpoint -> uri.contains(endpointWithoutWildcard(endpoint)));
   }
 
   private String endpointWithoutWildcard(String endpoint) {

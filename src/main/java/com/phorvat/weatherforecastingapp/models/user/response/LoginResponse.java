@@ -1,4 +1,4 @@
-package com.phorvat.weatherforecastingapp.models.response;
+package com.phorvat.weatherforecastingapp.models.user.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,4 @@ public class LoginResponse {
 
   private final Boolean isAdmin;
 
-  @Override
-  public String toString() {
-    return "LoginResponse{" + "jwtToken='" + jwtToken + '\'' + ", isAdmin=" + isAdmin + '}';
-  }
 }

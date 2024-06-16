@@ -1,59 +1,61 @@
-package hr.algebra.travelplanner.authentication;
+package com.phorvat.weatherforecastingapp.auth;
 
-import hr.algebra.travelplanner.authentication.jwt.JwtService;
-import hr.algebra.travelplanner.feature.customer.Customer;
-import hr.algebra.travelplanner.feature.customer.CustomerRepository;
-import hr.algebra.travelplanner.feature.customer.request.LoginRequest;
-import hr.algebra.travelplanner.feature.customer.request.RegisterRequest;
-import hr.algebra.travelplanner.feature.customer.response.LoginResponse;
-import hr.algebra.travelplanner.feature.customer.Role;
+
+import com.phorvat.weatherforecastingapp.auth.jwt.JwtService;
+import com.phorvat.weatherforecastingapp.models.location.LocationService;
+import com.phorvat.weatherforecastingapp.models.user.Role;
+import com.phorvat.weatherforecastingapp.models.user.User;
+import com.phorvat.weatherforecastingapp.models.user.UserRepository;
+import com.phorvat.weatherforecastingapp.models.user.request.LoginRequest;
+import com.phorvat.weatherforecastingapp.models.user.request.RegisterRequest;
+import com.phorvat.weatherforecastingapp.models.user.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-  private final CustomerRepository customerRepository;
+  private final UserRepository userRepository;
   private final JwtService jwtService;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final LocationService locationService;
 
   public LoginResponse login(LoginRequest request) {
-    Customer customer =
-        customerRepository
+    User user =
+            userRepository
             .findByUsername(request.getUsername())
             .orElseThrow(
                 () ->
                     new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Customer with the given username does not exist"));
 
-    if (!bCryptPasswordEncoder.matches(request.getPassword(), customer.getPassword())) {
+    if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password.");
     }
 
-    Boolean isCustomerAdmin = customer.getRoles().contains(Role.ROLE_ADMIN);
+    Boolean isCustomerAdmin = user.getRoles().contains(Role.ROLE_ADMIN);
 
-    return new LoginResponse(jwtService.createJwt(customer), isCustomerAdmin);
+    return new LoginResponse(jwtService.createJwt(user), isCustomerAdmin);
   }
 
   public void register(RegisterRequest request) {
     //TODO: implement customer mapper
     try {
-      Customer newCustomer = new Customer();
-      newCustomer.setName(request.getName());
-      newCustomer.setSurname(request.getSurname());
-      newCustomer.setUsername(request.getUsername());
-      newCustomer.setEmail(request.getEmail());
-      newCustomer.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
-      newCustomer.getRoles().add(Role.ROLE_USER);
+      User newUser = new User();
+      newUser.setName(request.getName());
+      newUser.setLastName(request.getSurname());
+      newUser.setUsername(request.getUsername());
+      newUser.setEmail(request.getEmail());
+      newUser.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+      newUser.getRoles().add(Role.ROLE_USER);
       if (request.getIsAdmin()) {
-        newCustomer.getRoles().add(Role.ROLE_ADMIN);
+        newUser.getRoles().add(Role.ROLE_ADMIN);
+        newUser.setLocation_id(locationService.getLocationById(1));
       }
-      customerRepository.save(newCustomer);
+      userRepository.save(newUser);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }

@@ -1,4 +1,4 @@
-package hr.algebra.travelplanner.configuration;
+package com.phorvat.weatherforecastingapp.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.phorvat.weatherforecastingapp.models.request;
+package com.phorvat.weatherforecastingapp.models.user.request;
 
 import lombok.Data;
 

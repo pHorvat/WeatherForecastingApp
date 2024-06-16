@@ -1,6 +1,9 @@
-package com.phorvat.weatherforecastingapp.models;
+package com.phorvat.weatherforecastingapp.models.user;
 
 import com.phorvat.weatherforecastingapp.auth.jwt.JwtService;
+import com.phorvat.weatherforecastingapp.models.location.Location;
+import com.phorvat.weatherforecastingapp.models.location.LocationRepository;
+import com.phorvat.weatherforecastingapp.models.location.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import java.util.List;
 public class UserService {
   private final UserRepository userRepository;
   private final JwtService jwtService;
+  private final LocationRepository locationRepository;
 
   public List<User> getAllUsers() {
     return userRepository.findAll();
@@ -38,4 +42,18 @@ public class UserService {
   public List<String> getCustomerRolesFromToken(String token) {
     return jwtService.getUserRolesFromJwt(token);
   }
+
+  public void updateUserLocation(Integer userId, Integer locationId) {
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    Location location = locationRepository.findById(locationId)
+            .orElseThrow(() -> new RuntimeException("Location not found"));
+    user.setLocation_id(location);
+    userRepository.save(user);
+  }
+
+  public void deleteUser(Integer id) {
+    userRepository.deleteById(id);
+  }
+
+
 }

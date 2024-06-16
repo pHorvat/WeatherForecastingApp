@@ -1,30 +1,23 @@
-package hr.algebra.travelplanner.feature.trip.mapper;
+package com.phorvat.weatherforecastingapp.models.location.mapper;
 
-import hr.algebra.travelplanner.feature.destination.mapper.DestinationMapper;
-import hr.algebra.travelplanner.feature.specific_location.SpecificLocation;
-import hr.algebra.travelplanner.feature.specific_location.response.SpecificLocationSimple;
-import hr.algebra.travelplanner.feature.trip.Trip;
-import hr.algebra.travelplanner.feature.trip.request.TripRequest;
-import hr.algebra.travelplanner.feature.trip.response.TripDetails;
+import com.phorvat.weatherforecastingapp.models.location.Location;
+import com.phorvat.weatherforecastingapp.models.location.request.LocationRequest;
+import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
 import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(
-    componentModel = "spring",
-    uses = {DestinationMapper.class})
-public interface TripMapper {
+@Mapper(componentModel = "spring")
+public interface LocationMapper {
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "customer", ignore = true)
-  @Mapping(target = "destinations", source = "destinationRequests")
-  Trip toEntity(TripRequest tripRequest);
+  Location toEntity(LocationRequest locationDetails);
 
-  TripDetails toDetails(Trip trip);
 
-  List<TripDetails> mapToTripDetailsList(List<Trip> trips);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @InheritConfiguration(name = "toEntity")
-  void update(TripRequest tripRequest, @MappingTarget Trip target);
+  LocationDetails toDetails(Location location);
+
+  List<LocationDetails> mapToLocationDetailsList(List<Location> locations);
+
+  void update(LocationRequest locationRequest, @MappingTarget Location location);
 }

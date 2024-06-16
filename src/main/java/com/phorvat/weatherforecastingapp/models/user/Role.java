@@ -1,4 +1,4 @@
-package com.phorvat.weatherforecastingapp.models;
+package com.phorvat.weatherforecastingapp.models.user;
 
 public enum Role {
   ROLE_USER,

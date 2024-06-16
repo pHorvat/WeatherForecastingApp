@@ -1,9 +1,9 @@
-package hr.algebra.travelplanner.feature.trip;
+package com.phorvat.weatherforecastingapp.models.location;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface TripRepository extends JpaRepository<Trip, Integer> {
-    List<Trip> findAllByCustomerId(Integer customerId);
+public interface LocationRepository extends JpaRepository<Location, Integer> {
+    List<Location> findAll();
 }

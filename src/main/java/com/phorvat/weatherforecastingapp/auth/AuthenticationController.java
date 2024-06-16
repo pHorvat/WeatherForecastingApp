@@ -1,8 +1,8 @@
-package hr.algebra.travelplanner.authentication;
+package com.phorvat.weatherforecastingapp.auth;
 
-import hr.algebra.travelplanner.feature.customer.request.LoginRequest;
-import hr.algebra.travelplanner.feature.customer.request.RegisterRequest;
-import hr.algebra.travelplanner.feature.customer.response.LoginResponse;
+import com.phorvat.weatherforecastingapp.models.user.request.LoginRequest;
+import com.phorvat.weatherforecastingapp.models.user.request.RegisterRequest;
+import com.phorvat.weatherforecastingapp.models.user.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

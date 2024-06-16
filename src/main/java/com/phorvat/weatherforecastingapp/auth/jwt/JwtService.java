@@ -1,8 +1,8 @@
-package hr.algebra.travelplanner.authentication.jwt;
+package com.phorvat.weatherforecastingapp.auth.jwt;
 
-import hr.algebra.travelplanner.feature.customer.Customer;
-import hr.algebra.travelplanner.feature.customer.CustomerRepository;
-import hr.algebra.travelplanner.feature.customer.Role;
+import com.phorvat.weatherforecastingapp.models.user.UserRepository;
+import com.phorvat.weatherforecastingapp.models.user.User;
+import com.phorvat.weatherforecastingapp.models.user.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,9 +29,9 @@ public class JwtService {
   @Value("${security.authentication.jwt.base64-secret}")
   private String secretKey;
 
-  private final CustomerRepository customerRepository;
+  private final UserRepository userRepository;
 
-  private Set<String> invalidatedTokens = new HashSet<>();
+  private final Set<String> invalidatedTokens = new HashSet<>();
 
   public boolean authenticate(String token) {
     // If JWT is invalid, user can not be authenticated
@@ -39,24 +39,24 @@ public class JwtService {
       return false;
     }
     // If JWT is valid, store authentication in Spring security context
-    Customer applicationUser = getCustomerFromJwt(token);
+    User applicationUser = getCustomerFromJwt(token);
     saveAuthentication(applicationUser);
 
     return true;
   }
 
-  public String createJwt(Customer jwtCustomer) {
+  public String createJwt(User jwtCustomer) {
     String roles = jwtCustomer.getRoles().stream().map(Role::name).collect(Collectors.joining(","));
 
     return Jwts.builder()
-        .signWith(SignatureAlgorithm.HS512, secretKey)
-        .setSubject(jwtCustomer.getName())
-        .claim("id", jwtCustomer.getId())
-        .claim("roles", roles)
-        .setExpiration(
-            new Date(Instant.now().plusSeconds(accessTokenValiditySeconds).toEpochMilli()))
-        .setIssuedAt(new Date())
-        .compact();
+            .signWith(SignatureAlgorithm.HS512, secretKey)
+            .setSubject(jwtCustomer.getName())
+            .claim("id", jwtCustomer.getId())
+            .claim("roles", roles)
+            .setExpiration(
+                    new Date(Instant.now().plusSeconds(accessTokenValiditySeconds).toEpochMilli()))
+            .setIssuedAt(new Date())
+            .compact();
   }
 
   private boolean isJwtInvalid(String jwtToken) {
@@ -85,23 +85,25 @@ public class JwtService {
     return true;
   }
 
-  public Customer getCustomerFromJwt(String jwtToken) {
+  public User getCustomerFromJwt(String jwtToken) {
     Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
 
-    Customer customer =
-        customerRepository
-            .findById(Integer.valueOf(claims.get("id").toString()))
-            .orElseThrow(() -> new RuntimeException("User not found from JWT"));
-    customer.setTrips(null);
+    User customer =
+            userRepository
+                    .findById(Integer.valueOf(claims.get("id").toString()))
+                    .orElseThrow(() -> new RuntimeException("User not found from JWT"));
     return customer;
   }
 
-  public Integer getCustomerIdFromJwt(String jwtToken) {
+  public Integer getUserIdFromJwt(String jwtToken) {
+    if ( jwtToken.startsWith("Bearer ")) {
+      jwtToken = jwtToken.substring(7);
+    }
     Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
     return Integer.valueOf(claims.get("id").toString());
   }
 
-  public List<String> getCustomerRolesFromJwt(String jwtToken) {
+  public List<String> getUserRolesFromJwt(String jwtToken) {
     Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
     return Arrays.asList(claims.get("roles").toString().split(","));
   }
@@ -111,14 +113,14 @@ public class JwtService {
     return claims.getSubject();
   }
 
-  private void saveAuthentication(Customer applicationUser) {
+  private void saveAuthentication(User applicationUser) {
     List<SimpleGrantedAuthority> authorities =
-        applicationUser.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.name()))
-            .collect(Collectors.toList());
+            applicationUser.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.name()))
+                    .collect(Collectors.toList());
 
     Authentication authentication =
-        new UsernamePasswordAuthenticationToken(applicationUser, null, authorities);
+            new UsernamePasswordAuthenticationToken(applicationUser, null, authorities);
     SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 

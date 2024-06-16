@@ -1,10 +1,9 @@
-package hr.algebra.travelplanner.feature.trip;
+package com.phorvat.weatherforecastingapp.models.location;
 
-import hr.algebra.travelplanner.authentication.jwt.JwtService;
-import hr.algebra.travelplanner.feature.customer.Customer;
-import hr.algebra.travelplanner.feature.trip.request.TripRequest;
-import hr.algebra.travelplanner.feature.trip.response.TripDetails;
-import hr.algebra.travelplanner.configuration.AuditorConfig;
+import com.phorvat.weatherforecastingapp.configuration.AuditorConfig;
+import com.phorvat.weatherforecastingapp.models.location.request.LocationRequest;
+import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
+import com.phorvat.weatherforecastingapp.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,43 +12,43 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/trips")
-public class TripController {
-  @Autowired private TripService tripService;
+@RequestMapping("/locations")
+public class LocationController {
+  @Autowired private LocationService locationService;
   @Autowired private AuditorConfig auditorConfig;
 
   @GetMapping()
-  public List<TripDetails> getAllTrips() {
-    return tripService.getAllTrips();
+  public List<LocationDetails> getAllLocations() {
+    return locationService.getAllLocations();
   }
 
-  @GetMapping("/my-trips")
-  public List<TripDetails> getAllUserTripsSimple() {
-    Customer customer =
-        auditorConfig
-            .getCurrentAuditor()
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
-    return tripService.getAllUserTrips(customer.getId());
-  }
+//  @GetMapping("/my-locations")
+//  public List<LocationDetails> getAllUserLocationsSimple() {
+//    User user =
+//        auditorConfig
+//            .getCurrentAuditor()
+//            .orElseThrow(
+//                () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
+//    return locationService.getAllUserLocations(user.getId());
+//  }
 
   @PostMapping()
-  public TripDetails create(@RequestBody TripRequest tripRequest) {
-    Customer customer =
+  public LocationDetails create(@RequestBody LocationRequest locationRequest) {
+    User user =
         auditorConfig
             .getCurrentAuditor()
             .orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
-    return tripService.create(customer, tripRequest);
+    return locationService.create(locationRequest);
   }
 
   @PutMapping("/{id}")
-  public TripDetails update(@PathVariable Integer id, @RequestBody TripRequest tripRequest) {
-    return tripService.update(id, tripRequest);
+  public LocationDetails update(@PathVariable Integer id, @RequestBody LocationRequest locationRequest) {
+    return locationService.update(id, locationRequest);
   }
 
   @DeleteMapping("/{id}")
   public void delete(@PathVariable Integer id) {
-    tripService.delete(id);
+    locationService.delete(id);
   }
 }

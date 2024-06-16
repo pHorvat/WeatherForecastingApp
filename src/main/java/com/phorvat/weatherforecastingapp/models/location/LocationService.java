@@ -1,9 +1,10 @@
-package hr.algebra.travelplanner.feature.trip;
+package com.phorvat.weatherforecastingapp.models.location;
 
-import hr.algebra.travelplanner.feature.customer.Customer;
-import hr.algebra.travelplanner.feature.trip.mapper.TripMapper;
-import hr.algebra.travelplanner.feature.trip.request.TripRequest;
-import hr.algebra.travelplanner.feature.trip.response.TripDetails;
+import com.phorvat.weatherforecastingapp.models.location.mapper.LocationMapper;
+import com.phorvat.weatherforecastingapp.models.location.request.LocationRequest;
+import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
+import com.phorvat.weatherforecastingapp.models.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,45 +14,38 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TripService {
-  private final TripRepository tripRepository;
-  private final TripMapper tripMapper;
+public class LocationService {
+  private final LocationRepository locationRepository;
+  private final LocationMapper locationMapper;
 
-  public List<TripDetails> getAllTrips() {
-    return tripMapper.mapToTripDetailsList(tripRepository.findAll());
+  public List<LocationDetails> getAllLocations() {
+    return locationMapper.mapToLocationDetailsList(locationRepository.findAll());
   }
 
-  public List<TripDetails> getAllUserTrips(Integer customerId) {
-    return tripMapper.mapToTripDetailsList(tripRepository.findAllByCustomerId(customerId));
+//  public List<LocationDetails> getAllUserLocations(Integer userId) {
+//    return locationMapper.mapToLocationDetailsList(locationRepository.findAllByUserId(userId));
+//  }
+
+  public LocationDetails create(LocationRequest locationRequest) {
+    Location location = locationMapper.toEntity(locationRequest);
+    return locationMapper.toDetails(locationRepository.save(location));
   }
 
-  public TripDetails create(Customer customer, TripRequest tripRequest) {
-    Trip trip = tripMapper.toEntity(tripRequest);
-    mapLocationsAndDestinationsToTrip(trip);
-    trip.setCustomer(customer);
-    return tripMapper.toDetails(tripRepository.save(trip));
-  }
-
-  public TripDetails update(Integer id, TripRequest tripRequest) {
-    Trip trip =
-        tripRepository
+  public LocationDetails update(Integer id, LocationRequest locationRequest) {
+    Location location =
+        locationRepository
             .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip not found"));
-    tripMapper.update(tripRequest, trip);
-    mapLocationsAndDestinationsToTrip(trip);
-    return tripMapper.toDetails(tripRepository.save(trip));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Location not found"));
+    locationMapper.update(locationRequest, location);
+    return locationMapper.toDetails(locationRepository.save(location));
   }
 
-  private void mapLocationsAndDestinationsToTrip(Trip trip) {
-    trip.getDestinations()
-        .forEach(
-            destination -> {
-              destination.setTrip(trip);
-              destination.getLocations().forEach(location -> location.setDestination(destination));
-            });
+  @Transactional
+  public Location getLocationById(Integer id) {
+    return locationRepository.findById(id).orElseThrow(() -> new RuntimeException("Location not found with id " + id));
   }
 
   public void delete(Integer id) {
-    tripRepository.deleteById(id);
+    locationRepository.deleteById(id);
   }
 }

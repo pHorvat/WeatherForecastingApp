@@ -1,6 +1,6 @@
-package com.phorvat.weatherforecastingapp.models;
+package com.phorvat.weatherforecastingapp.models.user;
 
-import hr.algebra.travelplanner.feature.trip.Trip;
+import com.phorvat.weatherforecastingapp.models.location.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,14 +12,13 @@ import java.util.Set;
 @Table(name = "users")
 @Data
 public class User {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   private String name;
 
-  private String surname;
+  private String lastName;
 
   private String username;
 
@@ -27,11 +26,22 @@ public class User {
 
   private String password;
 
-  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Trip> trips;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "location_id")
+  private Location location_id;
+
+  /*
+  @ManyToMany
+  @JoinTable(
+          name = "user_locations",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "location_id")
+  )
+  private Set<Location> locations = new HashSet<>();
+   */
 
   @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-  @CollectionTable(name = "customers_roles", joinColumns = @JoinColumn(name = "customer_id"))
+  @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
   @Column(name = "role", nullable = false)
   @Enumerated(EnumType.STRING)
   private Set<Role> roles = new HashSet<>();

@@ -1,14 +1,18 @@
-package hr.algebra.travelplanner.feature.destination.response;
+package com.phorvat.weatherforecastingapp.models.weather.response;
 
-import hr.algebra.travelplanner.feature.location.response.LocationDetails;
+import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
-public class DestinationDetails {
+public class WeatherDetails {
     private Integer id;
-    private Integer countryId;
-    private String countryName;
-    private List<LocationDetails> locations;
+    private Float temperature;
+    private Float humidity;
+    private Float precipitation;
+    private Float conditions;
+    private LocationDetails location;
+    private Timestamp timestamp;
 }

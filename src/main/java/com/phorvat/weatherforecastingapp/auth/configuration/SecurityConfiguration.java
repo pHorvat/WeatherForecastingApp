@@ -1,6 +1,6 @@
-package hr.algebra.travelplanner.authentication.configuration;
+package com.phorvat.weatherforecastingapp.auth.configuration;
 
-import hr.algebra.travelplanner.authentication.jwt.JwtFilter;
+import com.phorvat.weatherforecastingapp.auth.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,57 +24,58 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-  public static final List<String> UNAUTHENTICATED_ENDPOINTS =
-      List.of("/auth/register", "/auth/login", "/auth/registeradmin", "/countries/simple");
-  public static final List<String> ADMIN_ENDPOINTS = List.of(); //todo add all trips endpoint
+    private final JwtFilter jwtFilter;
+    public static final List<String> UNAUTHENTICATED_ENDPOINTS =
+            List.of("/auth/register", "/auth/login", "/auth/registeradmin", "/countries/simple");
+    public static final List<String> ADMIN_ENDPOINTS = List.of(); //todo add all trips endpoint
 
-  private final JwtFilter jwtFilter;
 
-  @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.authorizeHttpRequests(
-            auth -> {
-              UNAUTHENTICATED_ENDPOINTS.forEach(
-                  endpoint -> auth.requestMatchers(endpoint).permitAll());
 
-              ADMIN_ENDPOINTS.forEach(endpoint -> auth.requestMatchers(endpoint).hasRole("ADMIN"));
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.authorizeHttpRequests(
+                        auth -> {
+                            UNAUTHENTICATED_ENDPOINTS.forEach(
+                                    endpoint -> auth.requestMatchers(endpoint).permitAll());
 
-              auth.anyRequest().authenticated();
-            })
-        .csrf(csrf -> csrf.disable())
-        .cors(
-            httpSecurityCorsConfigurer ->
-                httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-        .formLogin(
-            login ->
-                login
-                    .defaultSuccessUrl("/web", true)
-                    .failureUrl("/login.html?error=true")) // TODO: change later
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        .exceptionHandling(
-            httpSecurityExceptionHandlingConfigurer ->
-                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
-                    (request, response, authException) ->
-                        response.setStatus(HttpStatus.UNAUTHORIZED.value())))
-        .build();
-  }
+                            ADMIN_ENDPOINTS.forEach(endpoint -> auth.requestMatchers(endpoint).hasRole("ADMIN"));
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Adjust the allowed origins
-    configuration.setAllowedMethods(
-        Arrays.asList(
-            HttpMethod.GET.name(),
-            HttpMethod.POST.name(),
-            HttpMethod.PUT.name(),
-            HttpMethod.DELETE.name()));
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-    configuration.setAllowCredentials(true);
+                            auth.anyRequest().authenticated();
+                        })
+                .csrf(csrf -> csrf.disable())
+                .cors(
+                        httpSecurityCorsConfigurer ->
+                                httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .formLogin(
+                        login ->
+                                login
+                                        .defaultSuccessUrl("/web", true)
+                                        .failureUrl("/login.html?error=true")) // TODO: change later
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        httpSecurityExceptionHandlingConfigurer ->
+                                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                                        (request, response, authException) ->
+                                                response.setStatus(HttpStatus.UNAUTHORIZED.value())))
+                .build();
+    }
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Adjust the allowed origins
+        configuration.setAllowedMethods(
+                Arrays.asList(
+                        HttpMethod.GET.name(),
+                        HttpMethod.POST.name(),
+                        HttpMethod.PUT.name(),
+                        HttpMethod.DELETE.name()));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
-    return source;
-  }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
 }

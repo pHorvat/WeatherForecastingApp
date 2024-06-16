@@ -1,32 +1,34 @@
-package hr.algebra.travelplanner.feature.destination;
+package com.phorvat.weatherforecastingapp.models.weather;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import hr.algebra.travelplanner.feature.country.Country;
-import hr.algebra.travelplanner.feature.location.Location;
-import hr.algebra.travelplanner.feature.trip.Trip;
+import com.phorvat.weatherforecastingapp.models.location.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "destinations")
+@Table(name = "weathers")
 @Data
-public class Destination {
+public class Weather {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  private Float temperature;
+
+  private Float humidity;
+
+  private Float precipitation;
+
+  private String conditions;
+
+  private Timestamp timestamp;
+
   @ManyToOne
-  @JoinColumn(name = "trip_id")
-  @JsonIgnore
-  private Trip trip;
+  @JoinColumn(name = "location_id")
+  private Location location;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "country_id")
-  private Country country;
-
-  @OneToMany(mappedBy = "destination", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Location> locations;
 }

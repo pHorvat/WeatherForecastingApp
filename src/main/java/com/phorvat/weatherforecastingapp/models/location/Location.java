@@ -1,33 +1,45 @@
-package hr.algebra.travelplanner.feature.trip;
+package com.phorvat.weatherforecastingapp.models.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import hr.algebra.travelplanner.feature.customer.Customer;
-import hr.algebra.travelplanner.feature.destination.Destination;
+import com.phorvat.weatherforecastingapp.models.user.User;
+import com.phorvat.weatherforecastingapp.models.weather.Weather;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "trips")
+@Table(name = "locations")
 @Data
-public class Trip {
+public class Location {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   private String name;
 
-  private LocalDate startDate;
+  private double latitude;
 
-  private LocalDate endDate;
+  private double longitude;
 
-  @OneToMany(mappedBy = "trip", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Destination> destinations;
+  private String country;
 
-  @ManyToOne
-  @JoinColumn(name = "customer_id")
-  @JsonIgnore
-  private Customer customer;
+  /*
+  @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  private List<Weather> weathers;
+
+  @Override
+  public String toString() {
+    return "Location{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", latitude=" + latitude +
+            ", longitude=" + longitude +
+            ", country='" + country + '\'' +
+            '}';
+  }
+*/
 }
