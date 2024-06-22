@@ -15,5 +15,6 @@ public class WeatherRequest {
   private Float precipitation;
   private Float conditions;
   private Integer locationId;
+  private Integer condition_code;
   private Timestamp timestamp;
 }

@@ -27,6 +27,8 @@ public class Weather {
 
   private Timestamp timestamp;
 
+  private Integer condition_code;
+
   @ManyToOne
   @JoinColumn(name = "location_id")
   private Location location;
