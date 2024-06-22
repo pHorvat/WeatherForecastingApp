@@ -3,7 +3,7 @@ package com.phorvat.weatherforecastingapp.models.user;
 import com.phorvat.weatherforecastingapp.auth.jwt.JwtService;
 import com.phorvat.weatherforecastingapp.models.location.Location;
 import com.phorvat.weatherforecastingapp.models.location.LocationRepository;
-import com.phorvat.weatherforecastingapp.models.location.LocationService;
+import com.phorvat.weatherforecastingapp.models.user.request.UserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,8 @@ public class UserService {
 
   public User getUserById(Integer id) {
     return userRepository
-        .findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
   }
 
   public Integer getUserIdFromToken(String token) {
@@ -35,8 +35,8 @@ public class UserService {
   public User getUserDataFromToken(String token) {
     Integer customerId = jwtService.getUserIdFromJwt(token);
     return userRepository
-        .findById(customerId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+            .findById(customerId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
   }
 
   public List<String> getCustomerRolesFromToken(String token) {
@@ -51,9 +51,20 @@ public class UserService {
     userRepository.save(user);
   }
 
+  public User updateCurrentUser(Integer userId, UserRequest userRequest) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
+    user.setName(userRequest.getName());
+    user.setLastName(userRequest.getSurname());
+    user.setUsername(userRequest.getUsername());
+    user.setEmail(userRequest.getEmail());
+    // Note: Password update should be handled separately with proper hashing
+
+    return userRepository.save(user);
+  }
+
   public void deleteUser(Integer id) {
     userRepository.deleteById(id);
   }
-
-
 }

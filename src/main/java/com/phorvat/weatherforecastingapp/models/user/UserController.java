@@ -1,5 +1,6 @@
 package com.phorvat.weatherforecastingapp.models.user;
 
+import com.phorvat.weatherforecastingapp.models.user.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,11 @@ public class UserController {
   public User updateUserLocation(@RequestHeader("Authorization") String token, @PathVariable Integer locationId) {
     userService.updateUserLocation(userService.getUserIdFromToken(token), locationId);
     return userService.getUserDataFromToken(token);
+  }
+
+  @PutMapping("/current")
+  public User updateCurrentUser(@RequestHeader("Authorization") String token, @RequestBody UserRequest userRequest) {
+    return userService.updateCurrentUser(userService.getUserIdFromToken(token), userRequest);
   }
 
   @DeleteMapping("/{id}")
