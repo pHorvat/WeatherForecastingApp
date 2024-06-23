@@ -22,15 +22,6 @@ public class LocationController {
     return locationService.getAllLocations();
   }
 
-//  @GetMapping("/my-locations")
-//  public List<LocationDetails> getAllUserLocationsSimple() {
-//    User user =
-//        auditorConfig
-//            .getCurrentAuditor()
-//            .orElseThrow(
-//                () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
-//    return locationService.getAllUserLocations(user.getId());
-//  }
 
   @PostMapping()
   public LocationDetails create(@RequestBody LocationRequest locationRequest) {

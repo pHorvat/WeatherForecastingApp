@@ -1,8 +1,12 @@
 package com.phorvat.weatherforecastingapp.models.user;
 
 import com.phorvat.weatherforecastingapp.models.user.request.UserRequest;
+import com.phorvat.weatherforecastingapp.models.user.request.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -42,9 +46,16 @@ public class UserController {
     return userService.getUserDataFromToken(token);
   }
 
-  @PutMapping("/current")
-  public User updateCurrentUser(@RequestHeader("Authorization") String token, @RequestBody UserRequest userRequest) {
-    return userService.updateCurrentUser(userService.getUserIdFromToken(token), userRequest);
+  @PutMapping("/{userId}")
+  public ResponseEntity<?> updateCurrentUser(@RequestHeader("Authorization") String token, @PathVariable Integer userId, @RequestBody UserUpdateRequest userRequest) {
+    User currentUser = userService.getUserDataFromToken(token);
+
+    if (currentUser.getRoles().contains(Role.ROLE_ADMIN)) {
+      User updatedUser = userService.updateCurrentUser(userId, userRequest);
+      return ResponseEntity.ok(updatedUser);
+    } else {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to update this user");
+    }
   }
 
   @DeleteMapping("/{id}")

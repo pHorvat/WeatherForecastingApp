@@ -4,6 +4,7 @@ import com.phorvat.weatherforecastingapp.auth.jwt.JwtService;
 import com.phorvat.weatherforecastingapp.models.location.Location;
 import com.phorvat.weatherforecastingapp.models.location.LocationRepository;
 import com.phorvat.weatherforecastingapp.models.user.request.UserRequest;
+import com.phorvat.weatherforecastingapp.models.user.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class UserService {
     userRepository.save(user);
   }
 
-  public User updateCurrentUser(Integer userId, UserRequest userRequest) {
+  public User updateCurrentUser(Integer userId, UserUpdateRequest userRequest) {
     User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
 
@@ -59,7 +60,6 @@ public class UserService {
     user.setLastName(userRequest.getSurname());
     user.setUsername(userRequest.getUsername());
     user.setEmail(userRequest.getEmail());
-    // Note: Password update should be handled separately with proper hashing
 
     return userRepository.save(user);
   }
