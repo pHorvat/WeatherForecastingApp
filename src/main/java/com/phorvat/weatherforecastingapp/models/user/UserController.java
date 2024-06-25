@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -50,7 +51,7 @@ public class UserController {
   public ResponseEntity<?> updateCurrentUser(@RequestHeader("Authorization") String token, @PathVariable Integer userId, @RequestBody UserUpdateRequest userRequest) {
     User currentUser = userService.getUserDataFromToken(token);
 
-    if (currentUser.getRoles().contains(Role.ROLE_ADMIN)) {
+    if (currentUser.getRoles().contains(Role.ROLE_ADMIN) || Objects.equals(currentUser.getId(), userId)) {
       User updatedUser = userService.updateCurrentUser(userId, userRequest);
       return ResponseEntity.ok(updatedUser);
     } else {
