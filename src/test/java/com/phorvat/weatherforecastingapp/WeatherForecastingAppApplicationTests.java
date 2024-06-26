@@ -9,8 +9,6 @@ import com.phorvat.weatherforecastingapp.models.user.request.UserUpdateRequest;
 import com.phorvat.weatherforecastingapp.models.weather.Weather;
 import com.phorvat.weatherforecastingapp.models.weather.WeatherController;
 import com.phorvat.weatherforecastingapp.models.weather.WeatherService;
-import com.phorvat.weatherforecastingapp.models.weather.request.WeatherRequest;
-import com.phorvat.weatherforecastingapp.models.weather.response.WeatherDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,36 +32,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class WeatherForecastingAppApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-    // Mocked Services
     @Mock
     private WeatherService weatherService;
 
     @Mock
-    private AuditorConfig auditorConfig;
-
-    @Mock
     private UserService userService;
 
-    // Inject Mocks into Controllers
     @InjectMocks
     private WeatherController weatherController;
 
     @InjectMocks
     private UserController userController;
 
-    private User testUser;
-
-    @BeforeEach
-    void setUp() {
-        testUser = new User();
-        // Set up testUser properties if needed
-    }
-
     // WeatherController Tests
-
     @Test
     void testGetAllWeathers() {
         Weather weather = new Weather();
@@ -100,35 +79,7 @@ class WeatherForecastingAppApplicationTests {
         assertTrue(result.isPresent());
     }
 
-    @Test
-    void testCreateAuthorized() {
-        WeatherRequest weatherRequest = new WeatherRequest();
-        WeatherDetails weatherDetails = new WeatherDetails();
-
-        when(auditorConfig.getCurrentAuditor()).thenReturn(Optional.of(testUser));
-        when(weatherService.create(any(WeatherRequest.class))).thenReturn(weatherDetails);
-
-        WeatherDetails result = weatherController.create(weatherRequest);
-
-        assertNotNull(result);
-    }
-
-    @Test
-    void testCreateUnauthorized() {
-        WeatherRequest weatherRequest = new WeatherRequest();
-
-        when(auditorConfig.getCurrentAuditor()).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            weatherController.create(weatherRequest);
-        });
-
-        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
-        assertEquals("Unauthorized", exception.getReason());
-    }
-
     // UserController Tests
-
     @Test
     void testGetAllUsers() {
         User user = new User();
@@ -178,7 +129,7 @@ class WeatherForecastingAppApplicationTests {
     void testGetCurrentUserRoles() {
         String token = "test-token";
         List<String> roles = Collections.singletonList("ROLE_USER");
-        when(userService.getCustomerRolesFromToken(token)).thenReturn(roles);
+        when(userService.getUserRolesFromToken(token)).thenReturn(roles);
 
         List<String> result = userController.getCurrentUserRoles(token);
 
@@ -227,7 +178,6 @@ class WeatherForecastingAppApplicationTests {
         UserUpdateRequest userRequest = new UserUpdateRequest();
         User user = new User();
         user.setRoles(Collections.singleton(Role.ROLE_USER));
-
 
         when(userService.getUserDataFromToken(token)).thenReturn(user);
 

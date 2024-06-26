@@ -3,7 +3,6 @@ package com.phorvat.weatherforecastingapp.models.user;
 import com.phorvat.weatherforecastingapp.auth.jwt.JwtService;
 import com.phorvat.weatherforecastingapp.models.location.Location;
 import com.phorvat.weatherforecastingapp.models.location.LocationRepository;
-import com.phorvat.weatherforecastingapp.models.user.request.UserRequest;
 import com.phorvat.weatherforecastingapp.models.user.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,13 +33,13 @@ public class UserService {
   }
 
   public User getUserDataFromToken(String token) {
-    Integer customerId = jwtService.getUserIdFromJwt(token);
+    Integer userId = jwtService.getUserIdFromJwt(token);
     return userRepository
-            .findById(customerId)
+            .findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
   }
 
-  public List<String> getCustomerRolesFromToken(String token) {
+  public List<String> getUserRolesFromToken(String token) {
     return jwtService.getUserRolesFromJwt(token);
   }
 

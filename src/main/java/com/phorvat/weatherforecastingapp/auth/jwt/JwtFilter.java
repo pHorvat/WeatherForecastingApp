@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
       log.trace("doFilter for endpoint: {} resolved jwt: {}", request.getRequestURI(), jwtToken);
 
       if (jwtToken != null
-              && !jwtToken.isEmpty()) { // only validate token if it exists in the request
+              && !jwtToken.isEmpty()) {
         boolean authenticate = jwtService.authenticate(jwtToken);
 
         if (!authenticate) {

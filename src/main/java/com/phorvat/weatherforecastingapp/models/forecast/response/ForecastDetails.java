@@ -3,11 +3,12 @@ package com.phorvat.weatherforecastingapp.models.forecast.response;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 public class ForecastDetails {
     private Integer locationId;
-    private java.sql.Date forecastDate;
+    private LocalDate forecastDate;
     private Float tempMax;
     private Float tempMin;
     private Float chanceOfRain;

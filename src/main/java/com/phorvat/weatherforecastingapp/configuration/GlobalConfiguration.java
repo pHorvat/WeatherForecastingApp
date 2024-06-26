@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class GlobalConfiguration {
 
-  // this is here so BCryptPasswordEncoder can be injected into AuthenticationService
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();

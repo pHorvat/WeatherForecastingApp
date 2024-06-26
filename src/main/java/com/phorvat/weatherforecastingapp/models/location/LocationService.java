@@ -3,7 +3,6 @@ package com.phorvat.weatherforecastingapp.models.location;
 import com.phorvat.weatherforecastingapp.models.location.mapper.LocationMapper;
 import com.phorvat.weatherforecastingapp.models.location.request.LocationRequest;
 import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
-import com.phorvat.weatherforecastingapp.models.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,10 +20,6 @@ public class LocationService {
   public List<LocationDetails> getAllLocations() {
     return locationMapper.mapToLocationDetailsList(locationRepository.findAll());
   }
-
-//  public List<LocationDetails> getAllUserLocations(Integer userId) {
-//    return locationMapper.mapToLocationDetailsList(locationRepository.findAllByUserId(userId));
-//  }
 
   public LocationDetails create(LocationRequest locationRequest) {
     Location location = locationMapper.toEntity(locationRequest);

@@ -30,16 +30,6 @@ public class User {
   @JoinColumn(name = "location_id")
   private Location location_id;
 
-  /*
-  @ManyToMany
-  @JoinTable(
-          name = "user_locations",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "location_id")
-  )
-  private Set<Location> locations = new HashSet<>();
-   */
-
   @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
   @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
   @Column(name = "role", nullable = false)

@@ -26,28 +26,26 @@ public class GlobalScheduler {
   private final WeatherRepository weatherRepository;
   private final ForecastRepository forecastRepository;
   private final HttpClient httpClient;
-  private static final String API_KEY = "91bfa226a05d42c0bbe144344242206"; // Extracted API key
+  private static final String API_KEY = "91bfa226a05d42c0bbe144344242206";
 
-  @Scheduled(fixedRate = 3600000) // Run every hour
+  @Scheduled(fixedRate = 3600000) // 1 hour
   public void fetchWeatherData() {
     List<Location> locations = locationRepository.findAll();
 
     for (Location location : locations) {
       try {
-        // Fetch combined weather and forecast data
         String url = String.format("http://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=5&hour=12", API_KEY, location.getName());
         String jsonResponse = httpClient.get(url, String.class);
 
-        // Map to WeatherDTO
         WeatherDTO weatherDTO = httpClient.parseJson(jsonResponse, "current", WeatherDTO.class);
         if (weatherDTO != null) {
           saveWeatherData(weatherDTO, location);
         }
 
-        // Map to ForecastDTO
         ForecastDTO forecastDTO = httpClient.parseJson(jsonResponse, "forecast", ForecastDTO.class);
         if (forecastDTO != null) {
           saveForecastData(forecastDTO, location);
+          System.out.println("Forecast for "+location.getName()+" fetched at " + LocalDateTime.now());
         }
       } catch (Exception e) {
         System.err.printf("Error fetching data for location %s: %s%n", location.getName(), e.getMessage());

@@ -13,8 +13,6 @@ public interface LocationMapper {
   @Mapping(target = "id", ignore = true)
   Location toEntity(LocationRequest locationDetails);
 
-
-
   LocationDetails toDetails(Location location);
 
   List<LocationDetails> mapToLocationDetailsList(List<Location> locations);

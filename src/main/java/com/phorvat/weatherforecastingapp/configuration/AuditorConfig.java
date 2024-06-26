@@ -19,7 +19,7 @@ public class AuditorConfig implements AuditorAware<User> {
       return Optional.empty();
     }
 
-    User customer = (User) auth.getPrincipal();
-    return Optional.of(customer);
+    User user = (User) auth.getPrincipal();
+    return Optional.of(user);
   }
 }

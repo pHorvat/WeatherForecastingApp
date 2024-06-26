@@ -26,10 +26,9 @@ public class SecurityConfiguration {
 
     private final JwtFilter jwtFilter;
     public static final List<String> UNAUTHENTICATED_ENDPOINTS =
-            List.of("/auth/register", "/auth/login", "/auth/registeradmin", "/countries/simple");
-    public static final List<String> ADMIN_ENDPOINTS = List.of(); //todo add all trips endpoint
-
-
+            List.of("/auth/register", "/auth/login");
+    public static final List<String> ADMIN_ENDPOINTS =
+            List.of("/locations/update", "/locations/delete", "/locations/create");
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,8 +48,7 @@ public class SecurityConfiguration {
                 .formLogin(
                         login ->
                                 login
-                                        .defaultSuccessUrl("/web", true)
-                                        .failureUrl("/login.html?error=true")) // TODO: change later
+                                        .defaultSuccessUrl("/", true))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
                         httpSecurityExceptionHandlingConfigurer ->
@@ -63,7 +61,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Adjust the allowed origins
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(
                 Arrays.asList(
                         HttpMethod.GET.name(),

@@ -23,7 +23,7 @@ public class LocationController {
   }
 
 
-  @PostMapping()
+  @PostMapping("/create")
   public LocationDetails create(@RequestBody LocationRequest locationRequest) {
     User user =
         auditorConfig
@@ -33,12 +33,12 @@ public class LocationController {
     return locationService.create(locationRequest);
   }
 
-  @PutMapping("/{id}")
+  @PutMapping("/update/{id}")
   public LocationDetails update(@PathVariable Integer id, @RequestBody LocationRequest locationRequest) {
     return locationService.update(id, locationRequest);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   public void delete(@PathVariable Integer id) {
     locationService.delete(id);
   }

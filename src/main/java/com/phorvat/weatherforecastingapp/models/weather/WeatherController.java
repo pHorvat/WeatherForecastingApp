@@ -1,13 +1,8 @@
 package com.phorvat.weatherforecastingapp.models.weather;
 
 import com.phorvat.weatherforecastingapp.configuration.AuditorConfig;
-import com.phorvat.weatherforecastingapp.models.user.User;
-import com.phorvat.weatherforecastingapp.models.weather.request.WeatherRequest;
-import com.phorvat.weatherforecastingapp.models.weather.response.WeatherDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +11,8 @@ import java.util.Optional;
 @RequestMapping("/weather")
 public class WeatherController {
   @Autowired private WeatherService weatherService;
-  @Autowired private AuditorConfig auditorConfig;
 
-  @GetMapping("")
+    @GetMapping("")
   public List<Weather> getAllDWeathers() {
     return weatherService.getAllWeathers();
   }
@@ -33,13 +27,4 @@ public class WeatherController {
     return weatherService.getLatestWeatherByLocationId(locationId);
   }
 
-  @PostMapping()
-  public WeatherDetails create(@RequestBody WeatherRequest weatherRequest) {
-    User user =
-            auditorConfig
-                    .getCurrentAuditor()
-                    .orElseThrow(
-                            () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
-    return weatherService.create(weatherRequest);
-  }
 }

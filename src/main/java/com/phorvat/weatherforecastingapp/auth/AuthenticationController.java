@@ -18,8 +18,8 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  public void register(@RequestBody RegisterRequest registerRequest) {
-    authenticationService.register(registerRequest);
+  public void register(@RequestHeader(value="Authorization", required = false) String token, @RequestBody RegisterRequest registerRequest) {
+    authenticationService.register(registerRequest, token);
   }
 
   @GetMapping("/logout")

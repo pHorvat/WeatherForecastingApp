@@ -34,12 +34,10 @@ public class JwtService {
   private final Set<String> invalidatedTokens = new HashSet<>();
 
   public boolean authenticate(String token) {
-    // If JWT is invalid, user can not be authenticated
     if (isJwtInvalid(token)) {
       return false;
     }
-    // If JWT is valid, store authentication in Spring security context
-    User applicationUser = getCustomerFromJwt(token);
+    User applicationUser = getUserFromJwt(token);
     saveAuthentication(applicationUser);
 
     return true;
@@ -85,14 +83,14 @@ public class JwtService {
     return true;
   }
 
-  public User getCustomerFromJwt(String jwtToken) {
+  public User getUserFromJwt(String jwtToken) {
     Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
 
-    User customer =
+    User user =
             userRepository
                     .findById(Integer.valueOf(claims.get("id").toString()))
                     .orElseThrow(() -> new RuntimeException("User not found from JWT"));
-    return customer;
+    return user;
   }
 
   public Integer getUserIdFromJwt(String jwtToken) {

@@ -1,12 +1,10 @@
 package com.phorvat.weatherforecastingapp.models.weather;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.phorvat.weatherforecastingapp.models.location.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "weathers")

@@ -1,8 +1,6 @@
 package com.phorvat.weatherforecastingapp.models.weather;
 
-import com.phorvat.weatherforecastingapp.models.location.Location;
-import com.phorvat.weatherforecastingapp.models.location.request.LocationRequest;
-import com.phorvat.weatherforecastingapp.models.location.response.LocationDetails;
+
 import com.phorvat.weatherforecastingapp.models.weather.mapper.WeatherMapper;
 import com.phorvat.weatherforecastingapp.models.weather.request.WeatherRequest;
 import com.phorvat.weatherforecastingapp.models.weather.response.WeatherDetails;
@@ -36,7 +34,6 @@ public class WeatherService {
 
   public WeatherDetails create(WeatherRequest weatherRequest) {
     if (weatherRequest.getTimestamp() == null) {
-      // Set current timestamp
       weatherRequest.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
     }
     Weather weather = weatherMapper.toEntity(weatherRequest);
