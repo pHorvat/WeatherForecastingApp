@@ -34,7 +34,7 @@ public class GlobalScheduler {
 
     for (Location location : locations) {
       try {
-        String url = String.format("http://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=5&hour=12", API_KEY, location.getName());
+        String url = String.format("http://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=3", API_KEY, location.getName());
         String jsonResponse = httpClient.get(url, String.class);
 
         WeatherDTO weatherDTO = httpClient.parseJson(jsonResponse, "current", WeatherDTO.class);

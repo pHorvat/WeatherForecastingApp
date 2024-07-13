@@ -1,5 +1,6 @@
 package com.phorvat.weatherforecastingapp.auth;
 
+import com.phorvat.weatherforecastingapp.models.user.User;
 import com.phorvat.weatherforecastingapp.models.user.request.LoginRequest;
 import com.phorvat.weatherforecastingapp.models.user.request.RegisterRequest;
 import com.phorvat.weatherforecastingapp.models.user.response.LoginResponse;
@@ -18,8 +19,9 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  public void register(@RequestHeader(value="Authorization", required = false) String token, @RequestBody RegisterRequest registerRequest) {
-    authenticationService.register(registerRequest, token);
+  public User register(@RequestHeader(value="Authorization", required = false) String token, @RequestBody RegisterRequest registerRequest) {
+    return authenticationService.register(registerRequest, token);
+
   }
 
   @GetMapping("/logout")

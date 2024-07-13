@@ -41,7 +41,7 @@ public class AuthenticationService {
     return new LoginResponse(jwtService.createJwt(user), isUserAdmin);
   }
 
-  public void register(RegisterRequest request, String token) {
+  public User register(RegisterRequest request, String token) {
     try {
       Boolean isUserAdmin = false;
       if (token != null && !token.isEmpty()){
@@ -58,6 +58,7 @@ public class AuthenticationService {
         newUser.getRoles().add(Role.ROLE_ADMIN);
       }
       userRepository.save(newUser);
+      return newUser;
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
